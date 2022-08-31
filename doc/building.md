@@ -57,10 +57,11 @@ cd $NE10_PATH
 mkdir build && cd build
 export ANDROID_NDK=/absolute/path/of/android-ndk
 export NE10_ANDROID_TARGET_ARCH=armv7                           # Can also be "aarch64"
-cmake -DCMAKE_TOOLCHAIN_FILE=../android/android_config.cmake ..
+cmake -DCMAKE_TOOLCHAIN_FILE=/absolute/path/of/android-ndk/.../build/cmake/android.toolchain.cmake ..
 make
 ```
 
+... or use the android build script at the root of this project.
 This Android toolchain file also uses two additional environment variables which can be set as appropriate for the target:
 
 - `ANDROID_API_LEVEL` specifies the Android API level.
