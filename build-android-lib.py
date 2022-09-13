@@ -7,6 +7,17 @@ import platform
 from pathlib import Path
 import time
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 class AndroidConfiguration:
     """ Fetch the current system Android configuration """
     android_sdk = None
@@ -48,11 +59,11 @@ if __name__ == "__main__":
 
     archs = ['aarch64', 'arm']
     archs_flags = {
-        'aarch64': "-DNE10_ENABLE_MATH=OFF",
+        'aarch64': "-DNE10_ENABLE_MATH=ON",
         'arm':  "-DNE10_ENABLE_MATH=ON"
     }
     for arch in archs:
-        print(f"Building arch {arch}")
+        print(f"{bcolors.WARNING}Building arch {arch}")
         os.environ['NE10_ANDROID_TARGET_ARCH'] = arch
         Path(f"build.{arch}").mkdir(parents=True, exist_ok=True)
         result = subprocess.run([
@@ -62,7 +73,13 @@ if __name__ == "__main__":
             f"-DCMAKE_TOOLCHAIN_FILE={androidConfig.ndk_path}/build/cmake/android.toolchain.cmake",
             "-DANDROID_ARM_NEON=ON",
             "-DCMAKE_MAKE_PROGRAM=/opt/homebrew/bin/ninja",
-            f"-DNE10_BUILD_EXAMPLES=OFF -DNE10_BUILD_UNIT_TEST=OFF -DANDROID_DEMO=OFF -DNE10_ENABLE_IMGPROC=OFF -DNE10_ASM_OPTIMIZATION=OFF -DNE10_ENABLE_PHYSICS=OFF {archs_flags[arch]}",
+            "-DNE10_BUILD_EXAMPLES=ON",
+            "-DNE10_BUILD_UNIT_TEST=OFF",
+            "-DANDROID_DEMO=OFF",
+            "-DNE10_ENABLE_IMGPROC=OFF",
+            "-DNE10_ASM_OPTIMIZATION=OFF",
+            "-DNE10_ENABLE_PHYSICS=OFF",
+            archs_flags[arch],
             "-G Ninja",
             ".."
             ],

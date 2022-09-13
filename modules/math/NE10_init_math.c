@@ -31,6 +31,7 @@
 
 ne10_result_t ne10_init_math (int is_NEON_available)
 {
+#ifdef NE10_NEON_ASM
     if (NE10_OK == is_NEON_available)
     {
         ne10_addc_float = ne10_addc_float_neon;
@@ -124,6 +125,8 @@ ne10_result_t ne10_init_math (int is_NEON_available)
     }
     else
     {
+#endif
+
         ne10_addc_float = ne10_addc_float_c;
         ne10_addc_vec2f = ne10_addc_vec2f_c;
         ne10_addc_vec3f = ne10_addc_vec3f_c;
@@ -154,6 +157,7 @@ ne10_result_t ne10_init_math (int is_NEON_available)
         ne10_mlac_vec4f = ne10_mlac_vec4f_c;
         ne10_add_float = ne10_add_float_c;
         ne10_sub_float = ne10_sub_float_c;
+        ne10_inner_float = ne10_inner_float_c;
         ne10_mul_float = ne10_mul_float_c;
         ne10_div_float = ne10_div_float_c;
         ne10_mla_float = ne10_mla_float_c;
@@ -212,7 +216,9 @@ ne10_result_t ne10_init_math (int is_NEON_available)
         ne10_identitymat_3x3f = ne10_identitymat_3x3f_c;
         ne10_transmat_2x2f = ne10_transmat_2x2f_c;
         ne10_identitymat_2x2f = ne10_identitymat_2x2f_c;
+#ifdef NE10_NEON_ASM
     }
+#endif
     return NE10_OK;
 }
 
@@ -247,7 +253,8 @@ ne10_result_t (*ne10_mlac_vec3f) (ne10_vec3f_t * dst, ne10_vec3f_t * acc, ne10_v
 ne10_result_t (*ne10_mlac_vec4f) (ne10_vec4f_t * dst, ne10_vec4f_t * acc, ne10_vec4f_t * src, const ne10_vec4f_t * cst, ne10_uint32_t count);
 ne10_result_t (*ne10_add_float) (ne10_float32_t * dst, ne10_float32_t * src1, ne10_float32_t * src2, ne10_uint32_t count);
 ne10_result_t (*ne10_sub_float) (ne10_float32_t * dst, ne10_float32_t * src1, ne10_float32_t * src2, ne10_uint32_t count);
-ne10_result_t (*ne10_mul_float) (ne10_float32_t * dst, ne10_float32_t * src1, ne10_float32_t * src2, ne10_uint32_t count);
+ne10_result_t (*ne10_inner_float) (ne10_float32_t * dst, const ne10_float32_t * src1, const ne10_float32_t * src2, ne10_uint32_t count);
+ne10_result_t (*ne10_mul_float) (ne10_float32_t * dst, const ne10_float32_t * src1, const ne10_float32_t * src2, ne10_uint32_t count);
 ne10_result_t (*ne10_div_float) (ne10_float32_t * dst, ne10_float32_t * src1, ne10_float32_t * src2, ne10_uint32_t count);
 ne10_result_t (*ne10_mla_float) (ne10_float32_t * dst, ne10_float32_t * acc, ne10_float32_t * src1, ne10_float32_t * src2, ne10_uint32_t count);
 ne10_result_t (*ne10_abs_float) (ne10_float32_t * dst, ne10_float32_t * src, ne10_uint32_t count);

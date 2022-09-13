@@ -43,7 +43,7 @@ ne10_mul_float_asm:
         @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         @
         @ arm_result_t ne10_mul_float(arm_vec2f_t * dst,
-        @                 arm_float_t * src1, const arm_float_t * src2,
+        @                 const arm_float_t * src1, const arm_float_t * src2,
         @                 unsigned int count)
         @
         @  r0: *dst & current src1 entry's address - made of base(r0)+offset(r5)

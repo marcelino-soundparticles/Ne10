@@ -75,9 +75,10 @@ if(IOS_PLATFORM)
     #return value by setting the variable to PARENT_SCOPE
     set(${ios_files} ${ios_files_tmp} PARENT_SCOPE)
   endfunction()
-endif(IOS_PLATFORM)
+endif()
 
 if(NE10_ENABLE_MATH)
+    message(WARNING "Math is ON")
     #enable NE10_init_math
     add_definitions(-DNE10_ENABLE_MATH)
     # Add math C files.
@@ -129,31 +130,35 @@ if(NE10_ENABLE_MATH)
       endforeach(intrinsic_file)
     endif()
 
-    set(NE10_MATH_NEON_SRCS
-        ${PROJECT_SOURCE_DIR}/modules/math/NE10_abs.neon.s
-        ${PROJECT_SOURCE_DIR}/modules/math/NE10_add.neon.s
-        ${PROJECT_SOURCE_DIR}/modules/math/NE10_div.neon.s
-        ${PROJECT_SOURCE_DIR}/modules/math/NE10_len.neon.s
-        ${PROJECT_SOURCE_DIR}/modules/math/NE10_mla.neon.s
-        ${PROJECT_SOURCE_DIR}/modules/math/NE10_mul.neon.s
-        ${PROJECT_SOURCE_DIR}/modules/math/NE10_normalize.neon.s
-        ${PROJECT_SOURCE_DIR}/modules/math/NE10_sub.neon.s
-        ${PROJECT_SOURCE_DIR}/modules/math/NE10_dot.neon.s
-        ${PROJECT_SOURCE_DIR}/modules/math/NE10_cross.neon.s
-        ${PROJECT_SOURCE_DIR}/modules/math/NE10_mulmat.neon.s
-        ${PROJECT_SOURCE_DIR}/modules/math/NE10_mulcmatvec.neon.s
-        ${PROJECT_SOURCE_DIR}/modules/math/NE10_detmat.neon.s
-        ${PROJECT_SOURCE_DIR}/modules/math/NE10_invmat.neon.s
-        ${PROJECT_SOURCE_DIR}/modules/math/NE10_transmat.neon.s
-        ${PROJECT_SOURCE_DIR}/modules/math/NE10_identitymat.neon.s
-    )
-if(IOS_PLATFORM)
-    convert_gas(NE10_MATH_NEON_SRCS NE10_MATH_IOS_NEON_SRCS)
-    #message(STATUS "convert_gas:${NE10_MATH_IOS_NEON_SRCS}")
-    set_file_to_c(NE10_MATH_IOS_NEON_SRCS)
-else(IOS_PLATFORM)
-    set_file_to_c(NE10_MATH_NEON_SRCS)
-endif(IOS_PLATFORM)
+    if(NE10_ASM_OPTIMIZATION)
+        set(NE10_MATH_NEON_SRCS
+            ${PROJECT_SOURCE_DIR}/modules/math/NE10_abs.neon.s
+            ${PROJECT_SOURCE_DIR}/modules/math/NE10_add.neon.s
+            ${PROJECT_SOURCE_DIR}/modules/math/NE10_div.neon.s
+            ${PROJECT_SOURCE_DIR}/modules/math/NE10_len.neon.s
+            ${PROJECT_SOURCE_DIR}/modules/math/NE10_mla.neon.s
+            ${PROJECT_SOURCE_DIR}/modules/math/NE10_mul.neon.s
+            ${PROJECT_SOURCE_DIR}/modules/math/NE10_normalize.neon.s
+            ${PROJECT_SOURCE_DIR}/modules/math/NE10_sub.neon.s
+            ${PROJECT_SOURCE_DIR}/modules/math/NE10_dot.neon.s
+            ${PROJECT_SOURCE_DIR}/modules/math/NE10_cross.neon.s
+            ${PROJECT_SOURCE_DIR}/modules/math/NE10_mulmat.neon.s
+            ${PROJECT_SOURCE_DIR}/modules/math/NE10_mulcmatvec.neon.s
+            ${PROJECT_SOURCE_DIR}/modules/math/NE10_detmat.neon.s
+            ${PROJECT_SOURCE_DIR}/modules/math/NE10_invmat.neon.s
+            ${PROJECT_SOURCE_DIR}/modules/math/NE10_transmat.neon.s
+            ${PROJECT_SOURCE_DIR}/modules/math/NE10_identitymat.neon.s
+        )
+    else()
+    endif()
+
+    if(IOS_PLATFORM)
+        convert_gas(NE10_MATH_NEON_SRCS NE10_MATH_IOS_NEON_SRCS)
+        #message(STATUS "convert_gas:${NE10_MATH_IOS_NEON_SRCS}")
+        set_file_to_c(NE10_MATH_IOS_NEON_SRCS)
+    else()
+        set_file_to_c(NE10_MATH_NEON_SRCS)
+    endif()
 
     # Add math init files.
     set(NE10_MATH_INIT_SRCS
@@ -166,13 +171,16 @@ endif(IOS_PLATFORM)
     set(NE10_INTRINSIC_SRCS ${NE10_INTRINSIC_SRCS} ${NE10_MATH_INTRINSIC_SRCS})
     if(IOS_PLATFORM)
         set(NE10_NEON_SRCS ${NE10_NEON_SRCS} ${NE10_MATH_IOS_NEON_SRCS})
-    else(IOS_PLATFORM)
+    else()
         set(NE10_NEON_SRCS ${NE10_NEON_SRCS} ${NE10_MATH_NEON_SRCS})
-    endif(IOS_PLATFORM)
+    endif()
 
+else()
+    message(WARNING "Math is OFF")
 endif()
 
 if(NE10_ENABLE_DSP)
+    message(WARNING "DSP is ON")
     #enable NE10_init_dsp
     add_definitions(-DNE10_ENABLE_DSP)
 
@@ -244,11 +252,11 @@ if(NE10_ENABLE_DSP)
         endforeach(intrinsic_file)
     endif()
 
-if(IOS_PLATFORM)
-    set_file_to_c(NE10_DSP_NEON_SRCS)
-else(IOS_PLATFORM)
-    set_file_to_c(NE10_DSP_NEON_SRCS)
-endif(IOS_PLATFORM)
+    if(IOS_PLATFORM)
+        set_file_to_c(NE10_DSP_NEON_SRCS)
+    else()
+        set_file_to_c(NE10_DSP_NEON_SRCS)
+    endif()
     # Add dsp init files.
     set(NE10_DSP_INIT_SRCS
         ${PROJECT_SOURCE_DIR}/modules/dsp/NE10_init_dsp.c
@@ -262,6 +270,8 @@ endif(IOS_PLATFORM)
     else(IOS_PLATFORM)
       set(NE10_NEON_SRCS ${NE10_NEON_SRCS} ${NE10_DSP_NEON_SRCS})
     endif(IOS_PLATFORM)
+else()
+    message(WARNING "DSP is OFF")
 endif()
 
 if(NE10_ENABLE_IMGPROC)
@@ -297,12 +307,13 @@ if(NE10_ENABLE_IMGPROC)
         ${PROJECT_SOURCE_DIR}/modules/imgproc/NE10_init_imgproc.c
     )
 
-if(IOS_PLATFORM)
-    convert_gas(NE10_IMGPROC_NEON_SRCS NE10_IMGPROC_IOS_NEON_SRCS)
-    set_file_to_c(NE10_IMGPROC_IOS_NEON_SRCS)
-else(IOS_PLATFORM)
-    set_file_to_c(NE10_IMGPROC_NEON_SRCS)
-endif(IOS_PLATFORM)
+    if(IOS_PLATFORM)
+        convert_gas(NE10_IMGPROC_NEON_SRCS NE10_IMGPROC_IOS_NEON_SRCS)
+        set_file_to_c(NE10_IMGPROC_IOS_NEON_SRCS)
+    else()
+        set_file_to_c(NE10_IMGPROC_NEON_SRCS)
+    endif()
+
     # Add image processing files
     set(NE10_INIT_SRCS ${NE10_INIT_SRCS} ${NE10_IMGPROC_INIT_SRCS})
     set(NE10_C_SRCS ${NE10_C_SRCS} ${NE10_IMGPROC_C_SRCS})
@@ -312,7 +323,7 @@ endif(IOS_PLATFORM)
     else(IOS_PLATFORM)
       set(NE10_NEON_SRCS ${NE10_NEON_SRCS} ${NE10_IMGPROC_NEON_SRCS})
     endif(IOS_PLATFORM)
-endif(NE10_ENABLE_IMGPROC)
+endif()
 
 if(NE10_ENABLE_PHYSICS)
     #enable NE10_init_physics
@@ -343,12 +354,12 @@ if(NE10_ENABLE_PHYSICS)
         ${PROJECT_SOURCE_DIR}/modules/physics/NE10_init_physics.c
     )
 
-if(IOS_PLATFORM)
-    convert_gas(NE10_PHYSICS_NEON_SRCS NE10_PHYSICS_IOS_NEON_SRCS)
-    set_file_to_c(NE10_PHYSICS_IOS_NEON_SRCS)
-else(IOS_PLATFORM)
-    set_file_to_c(NE10_PHYSICS_NEON_SRCS)
-endif(IOS_PLATFORM)
+    if(IOS_PLATFORM)
+        convert_gas(NE10_PHYSICS_NEON_SRCS NE10_PHYSICS_IOS_NEON_SRCS)
+        set_file_to_c(NE10_PHYSICS_IOS_NEON_SRCS)
+    else()
+        set_file_to_c(NE10_PHYSICS_NEON_SRCS)
+    endif()
     # Add physics files
     set(NE10_INIT_SRCS ${NE10_INIT_SRCS} ${NE10_PHYSICS_INIT_SRCS})
     set(NE10_C_SRCS ${NE10_C_SRCS} ${NE10_PHYSICS_C_SRCS})
@@ -358,7 +369,7 @@ endif(IOS_PLATFORM)
     else(IOS_PLATFORM)
       set(NE10_NEON_SRCS ${NE10_NEON_SRCS} ${NE10_PHYSICS_NEON_SRCS})
     endif(IOS_PLATFORM)
-endif(NE10_ENABLE_PHYSICS)
+endif()
 
 include_directories (
     ${PROJECT_SOURCE_DIR}/inc
@@ -384,7 +395,7 @@ if(NE10_BUILD_STATIC OR ANDROID_PLATFORM OR IOS_DEMO)
   if(IOS_DEMO)
     install(TARGETS NE10
       DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/../ios/NE10Demo/libs/)
-  endif(IOS_DEMO)
+  endif()
 endif()
 
 if(NE10_BUILD_SHARED)

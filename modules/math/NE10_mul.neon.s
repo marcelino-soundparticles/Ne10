@@ -46,8 +46,8 @@ ne10_mul_float_neon:
         @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         @
         @ arm_result_t ne10_mul_float(arm_float_t * dst,
-        @                 arm_float_t * src1,
-        @                 arm_float_t * src2,
+        @                 const arm_float_t * src1,
+        @                 const arm_float_t * src2,
         @                 unsigned int count)
         @
         @  r0: *dst & current dst entry's address

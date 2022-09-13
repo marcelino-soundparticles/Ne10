@@ -638,6 +638,19 @@ extern "C" {
     extern ne10_result_t ne10_mulc_vec4f_asm (ne10_vec4f_t * dst, ne10_vec4f_t * src, const ne10_vec4f_t * cst, ne10_uint32_t count);
 
     /**
+     * Inner product of two input arrays, storing the results in an output value
+     * Points to @ref ne10_inner_float_c, No neo neither asm implementation. This operation can be performed in-place.
+     *
+     * @param[out] dst   Pointer to the destination value
+     * @param[in]  src1  Pointer to the first source array
+     * @param[in]  src2  Pointer to the second source array
+     * @param[in]  count The number of multiplications to be performed (i.e. the length of the source arrays)
+     */
+    extern ne10_result_t (*ne10_inner_float) (ne10_float32_t * dst, const ne10_float32_t * src1, const ne10_float32_t * src2, ne10_uint32_t count);
+    /** Specific implementation of @ref ne10_inner_float using plain C code. */
+    extern ne10_result_t ne10_inner_float_c (ne10_float32_t * dst, const ne10_float32_t * src1, const ne10_float32_t * src2, ne10_uint32_t count);
+
+    /**
      * Multiplies the scalar elements of one input array by those of the same index in another,
      * storing the results in an output array. Points to @ref ne10_mul_float_c, @ref ne10_mul_float_neon,
      * or @ref ne10_mul_float_asm. This operation can be performed in-place.
@@ -647,13 +660,13 @@ extern "C" {
      * @param[in]  src2  Pointer to the second source array
      * @param[in]  count The number of multiplications to be performed (i.e. the length of the source arrays)
      */
-    extern ne10_result_t (*ne10_mul_float) (ne10_float32_t * dst, ne10_float32_t * src1, ne10_float32_t * src2, ne10_uint32_t count);
+    extern ne10_result_t (*ne10_mul_float) (ne10_float32_t * dst, const ne10_float32_t * src1, const ne10_float32_t * src2, ne10_uint32_t count);
     /** Specific implementation of @ref ne10_mul_float using plain C code. */
-    extern ne10_result_t ne10_mul_float_c (ne10_float32_t * dst, ne10_float32_t * src1, ne10_float32_t * src2, ne10_uint32_t count);
+    extern ne10_result_t ne10_mul_float_c (ne10_float32_t * dst, const ne10_float32_t * src1, const ne10_float32_t * src2, ne10_uint32_t count);
     /** Specific implementation of @ref ne10_mul_float using NEON intrinsics. */
-    extern ne10_result_t ne10_mul_float_neon (ne10_float32_t * dst, ne10_float32_t * src1, ne10_float32_t * src2, ne10_uint32_t count) asm ("ne10_mul_float_neon");
+    extern ne10_result_t ne10_mul_float_neon (ne10_float32_t * dst, const ne10_float32_t * src1, const ne10_float32_t * src2, ne10_uint32_t count) asm ("ne10_mul_float_neon");
     /** Specific implementation of @ref ne10_mul_float using NEON assembly. */
-    extern ne10_result_t ne10_mul_float_asm (ne10_float32_t * dst, ne10_float32_t * src1, ne10_float32_t * src2, ne10_uint32_t count);
+    extern ne10_result_t ne10_mul_float_asm (ne10_float32_t * dst, const ne10_float32_t * src1, const ne10_float32_t * src2, ne10_uint32_t count);
 
     /**
      * Element-wise multiplies the 2D vectors of one input array by those of the same index

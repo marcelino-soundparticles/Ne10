@@ -34,7 +34,18 @@
 
 #include <assert.h>
 
-ne10_result_t ne10_mul_float_c (ne10_float32_t * dst, ne10_float32_t * src1, ne10_float32_t * src2, ne10_uint32_t count)
+ne10_result_t ne10_inner_float_c (ne10_float32_t * dst, const ne10_float32_t * src1, const ne10_float32_t * src2, ne10_uint32_t count)
+{
+    NE10_CHECKPOINTER_DstSrc1Src2;
+    *dst = 0;
+    for ( unsigned int itr = 0; itr < count; itr++ )
+    {
+        *dst = *dst + src1[ itr ] * src2[ itr ];
+    }
+    return NE10_OK;
+}
+
+ne10_result_t ne10_mul_float_c (ne10_float32_t * dst, const ne10_float32_t * src1, const ne10_float32_t * src2, ne10_uint32_t count)
 {
     NE10_CHECKPOINTER_DstSrc1Src2;
     for ( unsigned int itr = 0; itr < count; itr++ )
